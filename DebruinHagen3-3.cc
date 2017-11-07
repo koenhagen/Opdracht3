@@ -15,7 +15,8 @@ void leesoptie ( char& keuze ) {
    }
    if ( keuze != '\n' ) {
       keuze = '\0';
-   } else {
+   } 
+   else {
       keuze = prevkeuze;
    }
    cin.ignore (INT_MAX, '\n');
@@ -64,7 +65,7 @@ life::life ( ) {
    startrow = 0;
    viewwidth = 40;
    viewlength = 20;
-   verschuifstapgrootte = 90;
+   verschuifstapgrootte = 10;
    percentage = 21;
 
 } // life::life
@@ -86,7 +87,7 @@ void life::drukaf ( ) {
 			}
 		}
 		if ( i >= startrow && i < startrow + viewlength ) {
-	cout << endl;
+			cout << endl;
 		}
 	}
 } // life::drukaf
@@ -110,29 +111,39 @@ void life::maakschoon ( ) {
 void life::glidergun ( ) {
 	ifstream invoer ("glidergun.txt",ios::in );
 	char kar;
-		for ( int i = 0; i < MAX; i++ ) {
-			for ( int j = 0; j < MAX; j++ ) {
+	for ( int i = 0; i < MAX; i++ ) {
+		for ( int j = 0; j < MAX; j++ ) {
+			if ( i == 0 || j == 0 || i == MAX - 1|| j == MAX - 1) {
+				wereld[i][j] = false;
+         	}
+         	else {
 				kar = invoer.get();
 				if ( kar == '\n' ) {
-					break;
-				}
-				else if ( kar == 'x' ) {
-					wereld[i][j] = true;
-				}
-			}
-		}
+				   break;
+            }
+            else if ( kar == 'x' ) {
+               wereld[i][j] = true;
+            }
+         }
+      }
+   }
 }
 
 void life::vulrandom ( ) {
    int r;
    for (int i = 0; i < MAX; i++ ) {
       for (int j = 0; j < MAX; j++ ) {
-         r = randomgetal ( );
-         if ( r < percentage*10 ) {
-         wereld[i][j] = true;
+         if ( i == 0 || j == 0 || i == MAX - 1|| j == MAX - 1) {
+            wereld[i][j] = false;
          }
          else {
-         wereld[i][j] = false;
+            r = randomgetal ( );
+            if ( r < percentage*10 ) {
+            wereld[i][j] = true;
+            }
+            else {
+            wereld[i][j] = false;
+            }
          }
       }
    }
@@ -177,8 +188,8 @@ void life::verschuifonder ( ) {
 
 void life::gaan ( ) {
 	int gaanteller = 0;
-	for (int i = 0; i < MAX; i++ ) {
-		for (int j = 0; j < MAX; j++ ) {
+	for (int i = 1; i < MAX - 1; i++ ) {
+		for (int j = 1; j < MAX - 1; j++ ) {
 			if ( wereld[i-1][j-1] == true ) {
 				gaanteller++;
 			}
@@ -224,7 +235,7 @@ void submenuverschuif( life& Box1) {
 	bool stopsubmenu = false;
 	while ( stopsubmenu != true ) {
 		cout << "Hoe wilt u verschuiven?"
-	        << " Gebruik WASD & s(T)oppen" << endl;
+	        << " Gebruik W, A, S, D & s(T)oppen" << endl;
 
       leesoptie( verschuifkeuze );
 
@@ -233,34 +244,34 @@ void submenuverschuif( life& Box1) {
          case 'a': {
 				Box1.verschuiflinks ( );
 				Box1.drukaf ( );
-				}
+			}
 			break;
 			case 'S':
          case 's': {
 				Box1.verschuifonder ( );
 				Box1.drukaf ( );
-				}
+			}
 			break;
 			case 'D':
          case 'd': {
 				Box1.verschuifrechts ( );
 				Box1.drukaf ( );
-				}
+			}
 			break;
 			case 'W':
          case 'w': {
 				Box1.verschuifboven ( );
 				Box1.drukaf ( );
-				}
+			}
 			break;
 			case 'T':
          case 't': {
 				stopsubmenu = true;
-				}
+			}
 			break;
 			default:
-				cout << "Not a Valid subkeuze. \n";
-				cout << "Choose again.\n";
+				cout << "Geen geldige optie" << endl;
+				cout << "Probeer opnieuw" << endl;
 			break;
 		}
 		verschuifkeuze = '\n';
@@ -271,7 +282,6 @@ void submenu( ) {
 	char subkeuze = '\n';
 	bool stopsubmenu = false;
 	while ( stopsubmenu != true ) {
-		//cout << " **********************************************" << endl;
 		cout << " - (V)erschuifings-stapgrootte";
 		cout << " - (P)ercentage";
 		cout << " - (T)ekens dood/levend" << endl;
@@ -296,8 +306,8 @@ void submenu( ) {
 				stopsubmenu = true;
 			break;
 			default:
-				cout << "Not a Valid subkeuze. \n";
-				cout << "Choose again.\n";
+				cout << "Geen geldige optie" << endl;
+				cout << "Probeer opnieuw" << endl;
 			break;
 		}
 		subkeuze = '\n';
@@ -309,7 +319,6 @@ int main( ) {
 	bool stopmenu = false;
 	life Box1;
 	while ( stopmenu != true ) {
-	//	cout << " **********************************************" << endl;
 		cout << " (S)toppen";
 		cout << " - (H)eelschoon";
 		cout << " - s(C)hoon";
@@ -327,7 +336,7 @@ int main( ) {
 		switch ( keuze ) {
 		   case 'S':
          case 's':
-				cout << "End of Program.\n";
+				cout << "Einde programma" << endl;
 				stopmenu = true;
 			break;
 			case 'H':
@@ -346,16 +355,16 @@ int main( ) {
 			case 'v':
 			   submenuverschuif ( Box1 );
 			break;
+			case 'P':
+         case 'p':
+				submenu( );
+			break;
 			case 'R':
          case 'r': {
 
 				Box1.vulrandom ( );
 				Box1.drukaf ( );
 			}
-			break;
-			case 'P':
-         case 'p':
-				submenu( );
 			break;
 			case 'L':
          case 'l': {
@@ -379,8 +388,8 @@ int main( ) {
 			}
 			break;
 			default:
-				cout << "Not a Valid keuze. \n";
-				cout << "Choose again.\n";
+				cout << "Geen geldige optie" << endl;
+				cout << "Probeer opnieuw" << endl;
 			break;
 		}
 		keuze = '\n';
