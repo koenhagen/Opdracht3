@@ -148,7 +148,6 @@ void life::verschuiflinks ( ) {
 }
 
 void life::verschuifrechts ( ) {
-   cout << startcolumn << endl;
    if ( MAX - startcolumn >= verschuifstapgrootte + viewwidth && startcolumn != MAX - viewwidth) {
 	   startcolumn += verschuifstapgrootte;
    }
@@ -168,7 +167,6 @@ void life::verschuifboven ( ) {
 }
 
 void life::verschuifonder ( ) {
-   cout << startrow << endl;
    if ( MAX - startrow >= verschuifstapgrootte + viewlength && startrow != MAX - viewlength ) {
 	   startrow += verschuifstapgrootte;
    }
