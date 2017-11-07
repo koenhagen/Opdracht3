@@ -63,8 +63,8 @@ life::life ( ) {
    startcolumn = 0;
    startrow = 0;
    viewwidth = 40;
-   viewlength = 40;
-   verschuifstapgrootte = 10;
+   viewlength = 20;
+   verschuifstapgrootte = 90;
    percentage = 21;
 
 } // life::life
@@ -98,7 +98,6 @@ void life::maakviewschoon ( ) {
       }
    }
 } // life::maakschoon
-
 
 void life::maakschoon ( ) {
    for (int i = 0; i < MAX; i++ ) {
@@ -140,7 +139,6 @@ void life::vulrandom ( ) {
 }
 
 void life::verschuiflinks ( ) {
-	cout << startcolumn << endl;
 	if ( startcolumn - verschuifstapgrootte >= 0 && startcolumn != viewwidth) {
 	   startcolumn -= verschuifstapgrootte;
    }
@@ -150,7 +148,7 @@ void life::verschuiflinks ( ) {
 }
 
 void life::verschuifrechts ( ) {
-   if ( MAX - startcolumn >= verschuifstapgrootte && startcolumn != MAX - viewwidth) {
+   if ( MAX - startcolumn >= verschuifstapgrootte + viewwidth && startcolumn != MAX - viewwidth) {
 	   startcolumn += verschuifstapgrootte;
    }
    else {
@@ -169,7 +167,7 @@ void life::verschuifboven ( ) {
 }
 
 void life::verschuifonder ( ) {
-   if ( MAX - startrow >= verschuifstapgrootte && startrow != MAX - viewlength ) {
+   if ( MAX - startrow >= verschuifstapgrootte + viewlength && startrow != MAX - viewlength ) {
 	   startrow += verschuifstapgrootte;
    }
    else {
