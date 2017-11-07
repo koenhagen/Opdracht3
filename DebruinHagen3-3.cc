@@ -110,7 +110,6 @@ void life::maakschoon ( ) {
 
 void life::glidergun ( ) {
 	ifstream invoer ("glidergun.txt",ios::in );
-   invoer.open;
 	char kar;
 		for ( int i = 0; i < MAX; i++ ) {
 			for ( int j = 0; j < MAX; j++ ) {
