@@ -7,6 +7,12 @@ using namespace std;
 
 const int MAX = 100;
 
+void enterloop ( ) {
+	for ( int i = 0; i < 50; i++ ) {
+		cout << endl;
+	}
+}
+
 void leesoptie ( char& keuze ) {
 	char prevkeuze = '\n';
    while ( prevkeuze == '\n' ) {
@@ -15,14 +21,16 @@ void leesoptie ( char& keuze ) {
    }
    if ( keuze != '\n' ) {
       keuze = '\0';
-   } else {
+   } 
+   else {
       keuze = prevkeuze;
    }
    cin.ignore (INT_MAX, '\n');
 }
 
-void leesgetal ( char& keuze ) {
+int leesgetal ( ) {
  	char prevkeuze = '\n';
+ 	char keuze = '\n';
  	int getal = 0;
    while ( prevkeuze == '\n' || keuze != '\n') {
       prevkeuze = keuze;
@@ -31,6 +39,7 @@ void leesgetal ( char& keuze ) {
          getal = ( getal * 10 ) + ( keuze - '0' );
       }
    }
+   return getal;
 }
 
 int randomgetal ( ) {
@@ -52,6 +61,8 @@ class life {
       void verschuifrechts ( );
       void verschuifboven ( );
       void verschuifonder ( );
+      void parameterverschuif ( int antwoord );
+      void parameterpercentage ( int antwoord );
    private:
       bool wereld[MAX][MAX];
       bool hulpwereld[MAX][MAX];
@@ -60,16 +71,17 @@ class life {
 }; // life
 
 life::life ( ) {
-   startcolumn = 0;
-   startrow = 0;
-   viewwidth = 40;
+   startcolumn = 40;
+   startrow = 40;
+   viewwidth = 20;
    viewlength = 20;
-   verschuifstapgrootte = 90;
-   percentage = 21;
+   verschuifstapgrootte = 10;
+   percentage = 20;
 
 } // life::life
 
 void life::drukaf ( ) {
+	enterloop ( );
 	for (int i = 0; i < MAX; i++ ) {
 		for (int j = 0; j < MAX; j++ ) {
 			if ( i >= startrow && i < startrow + viewlength && j >= startcolumn
@@ -86,7 +98,7 @@ void life::drukaf ( ) {
 			}
 		}
 		if ( i >= startrow && i < startrow + viewlength ) {
-	cout << endl;
+			cout << endl;
 		}
 	}
 } // life::drukaf
@@ -110,29 +122,39 @@ void life::maakschoon ( ) {
 void life::glidergun ( ) {
 	ifstream invoer ("glidergun.txt",ios::in );
 	char kar;
-		for ( int i = 0; i < MAX; i++ ) {
-			for ( int j = 0; j < MAX; j++ ) {
+	for ( int i = 0; i < MAX; i++ ) {
+		for ( int j = 0; j < MAX; j++ ) {
+			if ( i == 0 || j == 0 || i == MAX - 1|| j == MAX - 1) {
+				wereld[i][j] = false;
+         	}
+         	else {
 				kar = invoer.get();
 				if ( kar == '\n' ) {
-					break;
-				}
-				else if ( kar == 'x' ) {
-					wereld[i][j] = true;
-				}
-			}
-		}
+				   break;
+            }
+            else if ( kar == 'x' ) {
+               wereld[i][j] = true;
+            }
+         }
+      }
+   }
 }
 
 void life::vulrandom ( ) {
    int r;
    for (int i = 0; i < MAX; i++ ) {
       for (int j = 0; j < MAX; j++ ) {
-         r = randomgetal ( );
-         if ( r < percentage*10 ) {
-         wereld[i][j] = true;
+         if ( i == 0 || j == 0 || i == MAX - 1|| j == MAX - 1) {
+            wereld[i][j] = false;
          }
          else {
-         wereld[i][j] = false;
+            r = randomgetal ( );
+            if ( r < percentage*10 ) {
+            wereld[i][j] = true;
+            }
+            else {
+            wereld[i][j] = false;
+            }
          }
       }
    }
@@ -175,10 +197,18 @@ void life::verschuifonder ( ) {
    }
 }
 
+void life::parameterverschuif ( int antwoord ) {
+	verschuifstapgrootte = antwoord;
+}
+
+void life::parameterpercentage ( int antwoord ) {
+	percentage = antwoord;
+}
+
 void life::gaan ( ) {
 	int gaanteller = 0;
-	for (int i = 0; i < MAX; i++ ) {
-		for (int j = 0; j < MAX; j++ ) {
+	for (int i = 1; i < MAX - 1; i++ ) {
+		for (int j = 1; j < MAX - 1; j++ ) {
 			if ( wereld[i-1][j-1] == true ) {
 				gaanteller++;
 			}
@@ -224,7 +254,7 @@ void submenuverschuif( life& Box1) {
 	bool stopsubmenu = false;
 	while ( stopsubmenu != true ) {
 		cout << "Hoe wilt u verschuiven?"
-	        << " Gebruik WASD & s(T)oppen" << endl;
+	        << " Gebruik W, A, S, D & (H)oofdmenu" << endl;
 
       leesoptie( verschuifkeuze );
 
@@ -233,71 +263,80 @@ void submenuverschuif( life& Box1) {
          case 'a': {
 				Box1.verschuiflinks ( );
 				Box1.drukaf ( );
-				}
+			}
 			break;
 			case 'S':
          case 's': {
 				Box1.verschuifonder ( );
 				Box1.drukaf ( );
-				}
+			}
 			break;
 			case 'D':
          case 'd': {
 				Box1.verschuifrechts ( );
 				Box1.drukaf ( );
-				}
+			}
 			break;
 			case 'W':
          case 'w': {
 				Box1.verschuifboven ( );
 				Box1.drukaf ( );
-				}
+			}
 			break;
-			case 'T':
-         case 't': {
+			case 'H':
+         case 'h': {
+            enterloop ( );
 				stopsubmenu = true;
-				}
+			}
 			break;
 			default:
-				cout << "Not a Valid subkeuze. \n";
-				cout << "Choose again.\n";
+				cout << "Geen geldige optie" << endl;
+				cout << "Probeer opnieuw" << endl;
 			break;
 		}
 		verschuifkeuze = '\n';
 	}
 }
 
-void submenu( ) {
+void submenu( life& Box1 ) {
+	int antwoord;
 	char subkeuze = '\n';
 	bool stopsubmenu = false;
 	while ( stopsubmenu != true ) {
-		//cout << " **********************************************" << endl;
-		cout << " - (V)erschuifings-stapgrootte";
-		cout << " - (P)ercentage";
-		cout << " - (T)ekens dood/levend" << endl;
-		cout << " Wat wilt u doen? ";
+		cout << "(V)erschuivings-stapgrootte"
+			  << " - (P)ercentage"
+			  << " - (T)ekens dood/levend" 
+			  << " - (V)iew aanpassen"
+			  << " - (H)oofdmenu" << endl;
+		     << "Wat wilt u doen? ";
 
       leesoptie( subkeuze );
 
 		switch ( subkeuze ) {
-			case 'C':
-				cout << "game start!\n";
-				// rest of code here
-			break;
-			case 'R':
-				cout << "Story so far....\n";
-				// rest of code here
+			case 'V':
+			case 'v': {
+				cout << "Wat wordt de nieuwe verschuivings-stapgrootte?" << endl;
+				antwoord = leesgetal ( );
+				cout << "De nieuwe verschuivings-stapgrootte is " << antwoord << endl << endl;
+				Box1.parameterverschuif ( antwoord );
+			}
 			break;
 			case 'P':
-				submenu( );
+			case 'p': {
+			   cout << "Wat wordt het nieuwe percentage?" << endl;
+			   antwoord = leesgetal ( );
+				cout << "Het nieuwe percentage is " << antwoord << endl << endl;
+				Box1.parameterpercentage ( antwoord );
+			}
 			break;
-			case 'S':
-				cout << "End of Program.\n";
+			case 'H':
+			case 'h':
+			   enterloop ( );
 				stopsubmenu = true;
 			break;
 			default:
-				cout << "Not a Valid subkeuze. \n";
-				cout << "Choose again.\n";
+				cout << "Geen geldige optie" << endl;
+				cout << "Probeer opnieuw" << endl;
 			break;
 		}
 		subkeuze = '\n';
@@ -309,12 +348,11 @@ int main( ) {
 	bool stopmenu = false;
 	life Box1;
 	while ( stopmenu != true ) {
-	//	cout << " **********************************************" << endl;
-		cout << " (S)toppen";
+		cout << "(S)toppen";
 		cout << " - (H)eelschoon";
 		cout << " - s(C)hoon";
 		cout << " - (V)erschuiven";
-		cout << " - (P)arameters" << endl;
+		cout << " - (P)arameters";
 		cout << " - (R)andom";
 		cout << " - (T)oggle";
 		cout << " - g(L)idergun";
@@ -327,7 +365,7 @@ int main( ) {
 		switch ( keuze ) {
 		   case 'S':
          case 's':
-				cout << "End of Program.\n";
+				cout << "Einde programma" << endl;
 				stopmenu = true;
 			break;
 			case 'H':
@@ -346,16 +384,15 @@ int main( ) {
 			case 'v':
 			   submenuverschuif ( Box1 );
 			break;
+			case 'P':
+         case 'p':
+				submenu( Box1 );
+			break;
 			case 'R':
          case 'r': {
-
 				Box1.vulrandom ( );
 				Box1.drukaf ( );
 			}
-			break;
-			case 'P':
-         case 'p':
-				submenu( );
 			break;
 			case 'L':
          case 'l': {
@@ -374,13 +411,13 @@ int main( ) {
 				for ( int j = 0; j < 10000; j++ ) {
 					Box1.gaan ( );
 					Box1.drukaf ( );
-					usleep(50000);
+					usleep(500000);
 				}
 			}
 			break;
 			default:
-				cout << "Not a Valid keuze. \n";
-				cout << "Choose again.\n";
+				cout << "Geen geldige optie" << endl;
+				cout << "Probeer opnieuw" << endl;
 			break;
 		}
 		keuze = '\n';
